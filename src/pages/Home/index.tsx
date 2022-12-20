@@ -1,10 +1,11 @@
-import "leaflet/dist/leaflet.css";
+import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
 import { useEffect, useState } from 'react';
 import AddressSearch from '../../components/AddressSearch';
+import CustomMarker from "../../components/CustomMarker";
 import DonationPointCard from '../../components/DonationPointCard';
 import Loading from '../../components/Loading';
 import Warning, { WarningTuple } from '../../components/Warning';
-import { PositionTuple, useDonationPoint } from '../../contexts/donationPoint';
+import { PositionData, useDonationPoint } from '../../contexts/donationPoint';
 import { DonationPoint, listDonationPointHttp } from '../../services/http/donationPoint';
 import { HomeEl } from './styles';
 
@@ -14,8 +15,14 @@ const Home = () => {
         defineCurrentPosition,
     } = useDonationPoint();
 
+    const { isLoaded } = useJsApiLoader({
+        id: 'google-map-script',
+        googleMapsApiKey: "AIzaSyB8KPJ7PrdQVSlZFcwDOrUEhBMavtdnVV4"
+    })
+
     const [isLoading, setIsLoading] = useState(false);
     const [warning, setWarning] = useState<WarningTuple>(["", ""]);
+    const [selectedPointIndex, setSelectedPointIndex] = useState(-1);
 
     const [donationPoints, setDonationPoints] = useState<DonationPoint[]>([]);
 
@@ -26,7 +33,10 @@ const Home = () => {
     }, []);
 
     const defineInitialPosition = () => {
-        let initialPosition: PositionTuple = [-23.4990251, -46.7962413];
+        let initialPosition: PositionData = {
+            lat: -23.4990251,
+            lng: -46.7962413
+        };
 
         defineCurrentPosition(initialPosition);
     }
@@ -42,13 +52,22 @@ const Home = () => {
         }).finally(() => { setIsLoading(false); });
     }
 
+    const handlerClickPoint = (index: number) => {
+        setSelectedPointIndex(index);
+        console.log(index)
+    }
+
+    const handlerClosePoint = () => {
+        setSelectedPointIndex(-1);
+    }
+
     return (
         <HomeEl>
             <AddressSearch />
 
-            <div>
-                <h3>Pontos de coleta</h3>
+            <h3>Pontos de coleta</h3>
 
+            <div>
                 {donationPoints.map(x => (
                     <DonationPointCard
                         key={x.id}
@@ -67,6 +86,32 @@ const Home = () => {
             </div>
 
             <div>
+                {isLoaded && <GoogleMap
+                    mapContainerStyle={{
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "0.5rem",
+                        border: "solid 1px #999999"
+                    }}
+                    center={currentPosition}
+                    zoom={15}
+                    options={{ mapId: "8a357d15ae39d525" }}
+                >
+                    {donationPoints.map((x, index) => (<CustomMarker
+                        position={{
+                            lat: x.lat,
+                            lng: x.lng
+                        }}
+                        selected={index === selectedPointIndex}
+                        onClick={() => handlerClickPoint(index)}
+                    />))}
+
+                    {donationPoints[selectedPointIndex] && <DonationPointCard
+                        cardData={donationPoints[selectedPointIndex]}
+                        alterLayout={true}
+                        onClose={handlerClosePoint}
+                    />}
+                </GoogleMap>}
             </div>
         </HomeEl>
     );

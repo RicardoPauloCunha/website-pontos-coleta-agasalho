@@ -1,18 +1,21 @@
 import { createContext, ReactNode, useContext, useState } from 'react';
 
-export type PositionTuple = [number, number];
+export type PositionData = {
+    lat: number;
+    lng: number;
+};
 
 type DonationPointContextData = {
-    currentPosition: PositionTuple;
-    defineCurrentPosition: (value: PositionTuple) => void;
+    currentPosition: PositionData;
+    defineCurrentPosition: (value: PositionData) => void;
 }
 
 const DonationPointContext = createContext({} as DonationPointContextData);
 
 export const DonationPointContextProvider = ({ children }: { children: ReactNode }) => {
-    const [currentPosition, setCurrentPosition] = useState<PositionTuple>([0, 0]);
+    const [currentPosition, setCurrentPosition] = useState<PositionData>({ lat: 0, lng: 0 });
 
-    const defineCurrentPosition = (value: PositionTuple) => {
+    const defineCurrentPosition = (value: PositionData) => {
         setCurrentPosition(value);
     }
 

@@ -29,7 +29,10 @@ const AddressSearch = () => {
     };
 
     const handleSelect = (event: any) => {
-        defineCurrentPosition([event.coords[0], event.coords[1]]);
+        defineCurrentPosition({
+            lat: event.coords[0],
+            lng: event.coords[1]
+        });
     };
 
     return (
