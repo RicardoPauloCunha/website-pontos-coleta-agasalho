@@ -17,7 +17,7 @@ const Home = () => {
 
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
-        googleMapsApiKey: "AIzaSyB8KPJ7PrdQVSlZFcwDOrUEhBMavtdnVV4"
+        googleMapsApiKey: ""
     })
 
     const [isLoading, setIsLoading] = useState(false);
