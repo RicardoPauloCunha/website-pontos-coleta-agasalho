@@ -22,7 +22,7 @@ const DonationPointCard = ({ alterLayout, cardData, onClose }: DonationPointCard
 
             <p>{formatAddress(cardData)}</p>
 
-            <span>{formatCep(cardData.cep)}</span>
+            <span>CEP: {formatCep(cardData.cep)}</span>
         </DonationPointCardEl>
     )
 }

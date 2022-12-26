@@ -1,52 +1,37 @@
-import AsyncSelect from "react-select/async";
+import { useState } from 'react';
+import { StandaloneSearchBox } from "@react-google-maps/api";
 import { useDonationPoint } from "../../contexts/donationPoint";
-import { getAddressHttp } from "../../services/http/mapbox";
-import { AddressSearchEl } from "./styles";
 
 const AddressSearch = () => {
     const {
         defineCurrentPosition
     } = useDonationPoint();
 
-    const getOptions = async (local: any, callback: any) => {
-        if (local.length < 5)
-            return;
+    const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox>();
 
-        let places: any = [];
-
-        getAddressHttp(local).then(response => {
-            places = response.features.map((x: any) => ({
-                label: x.place_name,
-                value: x.place_name,
-                coords: x.center,
-                place: x.place_name,
-            }));
-        });
-
-        callback(places);
-
-        return places;
+    const onLoad = (ref: google.maps.places.SearchBox) => {
+        setSearchBox(ref);
     };
 
-    const handleSelect = (event: any) => {
+    const handlerSelect = () => {
+        let places = searchBox?.getPlaces();
+
         defineCurrentPosition({
-            lat: event.coords[0],
-            lng: event.coords[1]
+            lat: places![0].geometry?.location?.lat() || 0,
+            lng: places![0].geometry?.location?.lng() || 0
         });
-    };
+    }
 
     return (
-        <AddressSearchEl>
-            <label htmlFor="addressSearch">Pesquisar endereço</label>
-
-            <AsyncSelect
-                placeholder="Rua das flores Nº 32, 00000-000..."
-                classNamePrefix="filter"
-                cacheOptions
-                loadOptions={getOptions}
-                onChange={handleSelect}
+        <StandaloneSearchBox
+            onLoad={onLoad}
+            onPlacesChanged={handlerSelect}
+        >
+            <input
+                className='address-search-input'
+                placeholder='Rua das flores Nº 32, 00000-000...'
             />
-        </AddressSearchEl>
+        </StandaloneSearchBox>
     );
 }
 

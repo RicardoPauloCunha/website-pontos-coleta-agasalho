@@ -24,9 +24,10 @@ export const DonationPointCardEl = styled.div<DonationPointCardElProps>`
     ${props => props.alterLayout && css`
         max-width: 40rem;
         background-color: var(--color-white);
+        box-shadow: var(--color-gray-200) 1px 1px 8px 0px;
         
         position: relative;
-        top: 1rem;
+        top: calc(100% - 11.5rem);
         left: 1rem;
 
         grid-template-areas:

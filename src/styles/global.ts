@@ -20,4 +20,18 @@ export default createGlobalStyle`
     h1, h2, h3, h4, h5, h6, p, strong, span {
         color: var(--color-gray-300);
     }
+
+    .address-search-input {
+        border: 1px solid var(--color-gray-200);
+        width: 30rem;
+        height: 3rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        outline: none;
+        text-overflow: ellipsis;
+        position: relative;
+        top: 1rem;
+        left: 1rem;
+    }
 `;

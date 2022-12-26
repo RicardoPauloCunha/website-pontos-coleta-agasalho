@@ -9,11 +9,9 @@ export const HomeEl = styled.main`
 
     display: grid;
     grid-template-columns: 0.3fr 1fr;
-    grid-template-rows: 6rem 2.5rem auto;
+    grid-template-rows: 2.5rem auto;
     grid-template-areas:
-    "form map"
     "subt map"
-    "list map"
     "list map";
 
     >h3 {

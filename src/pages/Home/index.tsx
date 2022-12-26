@@ -1,4 +1,4 @@
-import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import { useEffect, useState } from 'react';
 import AddressSearch from '../../components/AddressSearch';
 import CustomMarker from "../../components/CustomMarker";
@@ -15,41 +15,60 @@ const Home = () => {
         defineCurrentPosition,
     } = useDonationPoint();
 
-    const { isLoaded } = useJsApiLoader({
-        id: 'google-map-script',
-        googleMapsApiKey: ""
-    })
-
     const [isLoading, setIsLoading] = useState(false);
     const [warning, setWarning] = useState<WarningTuple>(["", ""]);
     const [selectedPointIndex, setSelectedPointIndex] = useState(-1);
 
+    const [map, setMap] = useState<google.maps.Map>();
     const [donationPoints, setDonationPoints] = useState<DonationPoint[]>([]);
 
     useEffect(() => {
-        defineInitialPosition();
+        navigator.geolocation.getCurrentPosition(getCurrentPosition);
+
+        defineDefaultPosition();
         getDonationPoints();
         // eslint-disable-next-line
     }, []);
 
-    const defineInitialPosition = () => {
-        let initialPosition: PositionData = {
-            lat: -23.4990251,
-            lng: -46.7962413
-        };
+    useEffect(() => {
+        if (map && currentPosition.lat && currentPosition.lng)
+            map.panTo(currentPosition);
+        // eslint-disable-next-line
+    }, [currentPosition]);
 
-        defineCurrentPosition(initialPosition);
+    const onMapLoad = (map: google.maps.Map) => {
+        setMap(map);
     }
 
     const getDonationPoints = () => {
         setIsLoading(true);
 
-        listDonationPointHttp({}).then(response => {
+        listDonationPointHttp({
+            size: 100
+        }).then(response => {
             if (response)
-                setDonationPoints(response);
+                setDonationPoints(response.content);
         }).catch(() => {
             setWarning(["danger", "Não foi possível buscar os pontos de coleta."]);
         }).finally(() => { setIsLoading(false); });
+    }
+
+    const getCurrentPosition = (geolocationPosition: GeolocationPosition) => {
+        let position: PositionData = {
+            lat: geolocationPosition.coords.latitude,
+            lng: geolocationPosition.coords.longitude
+        };
+
+        defineCurrentPosition(position);
+    }
+
+    const defineDefaultPosition = () => {
+        let initialPosition: PositionData = {
+            lat: -23.556296,
+            lng: -46.637773
+        };
+
+        defineCurrentPosition(initialPosition);
     }
 
     const handlerClickPoint = (index: number) => {
@@ -63,8 +82,6 @@ const Home = () => {
 
     return (
         <HomeEl>
-            <AddressSearch />
-
             <h3>Pontos de coleta</h3>
 
             <div>
@@ -86,32 +103,44 @@ const Home = () => {
             </div>
 
             <div>
-                {isLoaded && <GoogleMap
-                    mapContainerStyle={{
-                        width: "100%",
-                        height: "100%",
-                        borderRadius: "0.5rem",
-                        border: "solid 1px #999999"
-                    }}
-                    center={currentPosition}
-                    zoom={15}
-                    options={{ mapId: "8a357d15ae39d525" }}
+                <LoadScript
+                    googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY || ""}
+                    libraries={["places"]}
                 >
-                    {donationPoints.map((x, index) => (<CustomMarker
-                        position={{
-                            lat: x.lat,
-                            lng: x.lng
+                    <GoogleMap
+                        onLoad={onMapLoad}
+                        mapContainerStyle={{
+                            width: "100%",
+                            height: "100%",
+                            borderRadius: "0.5rem",
+                            border: "solid 1px #999999"
                         }}
-                        selected={index === selectedPointIndex}
-                        onClick={() => handlerClickPoint(index)}
-                    />))}
+                        options={{
+                            mapId: "138683949dfbf8c2",
+                            disableDefaultUI: true
+                        }}
+                        center={currentPosition}
+                        zoom={13}
+                    >
+                        <AddressSearch />
 
-                    {donationPoints[selectedPointIndex] && <DonationPointCard
-                        cardData={donationPoints[selectedPointIndex]}
-                        alterLayout={true}
-                        onClose={handlerClosePoint}
-                    />}
-                </GoogleMap>}
+                        {donationPoints.map((x, index) => (<CustomMarker
+                            key={index}
+                            position={{
+                                lat: x.lat,
+                                lng: x.lng
+                            }}
+                            selected={index === selectedPointIndex}
+                            onClick={() => handlerClickPoint(index)}
+                        />))}
+
+                        {donationPoints[selectedPointIndex] && <DonationPointCard
+                            cardData={donationPoints[selectedPointIndex]}
+                            alterLayout={true}
+                            onClose={handlerClosePoint}
+                        />}
+                    </GoogleMap>
+                </LoadScript>
             </div>
         </HomeEl>
     );
