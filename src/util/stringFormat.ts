@@ -11,7 +11,7 @@ export const formatCep = (value: string) => {
 }
 
 export const formatAddress = (value: DonationPoint) => {
-    return `${value.street}, ${value.number}, ${value.district} - ${value.city}/${value.state.toUpperCase()}`;
+    return `${value.street}, ${value.number}, ${value.district} - ${value.city}/${value.state.toUpperCase()}, ${formatCep(value.cep)}`;
 }
 
 export const hasValueString = (value?: string | null) => {

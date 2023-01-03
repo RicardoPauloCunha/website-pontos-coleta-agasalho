@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { StandaloneSearchBox } from "@react-google-maps/api";
-import { useDonationPoint } from "../../contexts/donationPoint";
+import { PositionData, useDonationPoint } from "../../contexts/donationPoint";
 
-const AddressSearch = () => {
+type AddressSearchProps = {
+    resetSelections: () => void;
+}
+
+const AddressSearch = ({ resetSelections }: AddressSearchProps) => {
     const {
         defineCurrentPosition
     } = useDonationPoint();
@@ -16,10 +20,13 @@ const AddressSearch = () => {
     const handlerSelect = () => {
         let places = searchBox?.getPlaces();
 
-        defineCurrentPosition({
+        let position: PositionData = {
             lat: places![0].geometry?.location?.lat() || 0,
             lng: places![0].geometry?.location?.lng() || 0
-        });
+        }
+
+        defineCurrentPosition(position);
+        resetSelections();
     }
 
     return (

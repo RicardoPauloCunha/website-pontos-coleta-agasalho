@@ -1,29 +1,27 @@
 import { Marker } from '@react-google-maps/api';
 import pointDefaultIcon from "../../assents/icons/point_default.svg";
 import pointSelectedIcon from "../../assents/icons/point_selected.svg";
+import { PositionData } from '../../contexts/donationPoint';
 
 export type CustomMarkerProps = {
     selected: boolean;
-    position: {
-        lat: number;
-        lng: number;
-    };
+    position: PositionData;
     onClick: () => void;
 }
 
-const CustomMarker = ({ selected, position, onClick }: CustomMarkerProps) => {
+const CollectMarker = ({ selected, position, onClick }: CustomMarkerProps) => {
     return (
-        <Marker key="custom_marker"
+        <Marker key="collect"
             icon={selected
                 ? {
                     url: pointSelectedIcon,
-                    anchor: new google.maps.Point(17, 17),
-                    scaledSize: new google.maps.Size(25, 25)
+                    anchor: new google.maps.Point(22, 22),
+                    scaledSize: new google.maps.Size(45, 45)
                 }
                 : {
                     url: pointDefaultIcon,
                     anchor: new google.maps.Point(15, 15),
-                    scaledSize: new google.maps.Size(20, 20)
+                    scaledSize: new google.maps.Size(30, 30)
                 }
             }
             position={position}
@@ -32,4 +30,4 @@ const CustomMarker = ({ selected, position, onClick }: CustomMarkerProps) => {
     )
 }
 
-export default CustomMarker;
+export default CollectMarker;

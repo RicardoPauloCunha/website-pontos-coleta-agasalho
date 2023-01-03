@@ -1,15 +1,19 @@
 import { GoogleMap, LoadScript } from "@react-google-maps/api";
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import AddressSearch from '../../components/AddressSearch';
-import CustomMarker from "../../components/CustomMarker";
+import CollectMarker from "../../components/CollectMarker";
 import DonationPointCard from '../../components/DonationPointCard';
 import Loading from '../../components/Loading';
 import Warning, { WarningTuple } from '../../components/Warning';
 import { PositionData, useDonationPoint } from '../../contexts/donationPoint';
 import { DonationPoint, listDonationPointHttp } from '../../services/http/donationPoint';
+import { haversineFormula } from "../../util/formula";
+import { donationPointCardIdGenetor } from "../../util/generator";
 import { HomeEl } from './styles';
 
 const Home = () => {
+    const divRef = useRef<HTMLDivElement>(null);
+
     const {
         currentPosition,
         defineCurrentPosition,
@@ -23,21 +27,27 @@ const Home = () => {
     const [donationPoints, setDonationPoints] = useState<DonationPoint[]>([]);
 
     useEffect(() => {
-        navigator.geolocation.getCurrentPosition(getCurrentPosition);
+        navigator.geolocation.getCurrentPosition(getCurrentPosition, defineDefaultPosition);
 
-        defineDefaultPosition();
         getDonationPoints();
         // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
-        if (map && currentPosition.lat && currentPosition.lng)
-            map.panTo(currentPosition);
+        if (donationPoints && currentPosition.lat && currentPosition.lng) {
+            handlerFocusPoint(currentPosition);
+            defineDonationsPoints();
+        }
         // eslint-disable-next-line
-    }, [currentPosition]);
+    }, [donationPoints, currentPosition]);
 
-    const onMapLoad = (map: google.maps.Map) => {
-        setMap(map);
+    const getCurrentPosition = (geolocationPosition: GeolocationPosition) => {
+        let position: PositionData = {
+            lat: geolocationPosition.coords.latitude,
+            lng: geolocationPosition.coords.longitude
+        };
+
+        defineCurrentPosition(position);
     }
 
     const getDonationPoints = () => {
@@ -53,95 +63,127 @@ const Home = () => {
         }).finally(() => { setIsLoading(false); });
     }
 
-    const getCurrentPosition = (geolocationPosition: GeolocationPosition) => {
-        let position: PositionData = {
-            lat: geolocationPosition.coords.latitude,
-            lng: geolocationPosition.coords.longitude
-        };
-
-        defineCurrentPosition(position);
-    }
-
     const defineDefaultPosition = () => {
         let initialPosition: PositionData = {
-            lat: -23.556296,
-            lng: -46.637773
+            lat: -23.550599,
+            lng: -46.632938
         };
 
         defineCurrentPosition(initialPosition);
     }
 
-    const handlerClickPoint = (index: number) => {
-        setSelectedPointIndex(index);
-        console.log(index)
+    const defineDonationsPoints = () => {
+        donationPoints.forEach(x => {
+            let pointPosition = {
+                lat: x.lat,
+                lng: x.lng
+            };
+
+            x.distance = haversineFormula(currentPosition, pointPosition);
+        });
+
+        donationPoints.sort((a, b) => a.distance - b.distance);
+
+        setDonationPoints(donationPoints);
     }
 
-    const handlerClosePoint = () => {
-        setSelectedPointIndex(-1);
+    const toggleSelectedPoint = (index: number, mapFocus: boolean) => {
+        if (index === selectedPointIndex) {
+            setSelectedPointIndex(-1);
+        }
+        else {
+            setSelectedPointIndex(index);
+
+            if (mapFocus) {
+                handlerFocusPoint({
+                    lat: donationPoints[index].lat,
+                    lng: donationPoints[index].lng
+                });
+            }
+            else {
+                const card = document.getElementById(donationPointCardIdGenetor(donationPoints[index].id));
+
+                card?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "center"
+                });
+            }
+        }
+    }
+
+    const handlerMapLoad = (map: google.maps.Map) => {
+        setMap(map);
+    }
+
+    const handlerFocusPoint = (position: PositionData) => {
+        if (map)
+            map.panTo(position);
+    }
+
+    const handlerResetSelections = () => {
+        toggleSelectedPoint(selectedPointIndex, false);
+        divRef.current?.scrollTo(0, 0);
     }
 
     return (
         <HomeEl>
-            <h3>Pontos de coleta</h3>
+            <aside>
+                <h3>Pontos de coleta</h3>
+                <p>Encontre os pontos de coleta mais próximos de você pode realizar a doação de agasalhos.</p>
 
-            <div>
-                {donationPoints.map(x => (
-                    <DonationPointCard
-                        key={x.id}
-                        cardData={x}
-                    />
-                ))}
+                <div
+                    ref={divRef}
+                >
+                    {donationPoints.map((x, index) => (
+                        <DonationPointCard
+                            key={x.id}
+                            index={index}
+                            isSelected={selectedPointIndex === index}
+                            cardData={x}
+                            toggleIsSelected={toggleSelectedPoint}
+                        />
+                    ))}
 
-                {isLoading && <Loading />}
+                    {isLoading && <Loading />}
 
-                <Warning value={warning} />
+                    <Warning value={warning} />
+                </div>
+            </aside>
 
-                {donationPoints.length === 0
-                    && !isLoading
-                    && !warning[0]
-                    && <Warning value={["warning", "Nenhum ponto de coleta foi encontrado."]} />}
-            </div>
-
-            <div>
+            <section>
                 <LoadScript
                     googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY || ""}
                     libraries={["places"]}
                 >
                     <GoogleMap
-                        onLoad={onMapLoad}
+                        onLoad={handlerMapLoad}
                         mapContainerStyle={{
                             width: "100%",
                             height: "100%",
-                            borderRadius: "0.5rem",
-                            border: "solid 1px #999999"
                         }}
                         options={{
                             mapId: "138683949dfbf8c2",
                             disableDefaultUI: true
                         }}
                         center={currentPosition}
-                        zoom={13}
+                        zoom={14}
                     >
-                        <AddressSearch />
+                        <AddressSearch
+                            resetSelections={handlerResetSelections}
+                        />
 
-                        {donationPoints.map((x, index) => (<CustomMarker
+                        {donationPoints.map((x, index) => (<CollectMarker
                             key={index}
                             position={{
                                 lat: x.lat,
                                 lng: x.lng
                             }}
                             selected={index === selectedPointIndex}
-                            onClick={() => handlerClickPoint(index)}
+                            onClick={() => toggleSelectedPoint(index, false)}
                         />))}
-
-                        {donationPoints[selectedPointIndex] && <DonationPointCard
-                            cardData={donationPoints[selectedPointIndex]}
-                            alterLayout={true}
-                            onClose={handlerClosePoint}
-                        />}
                     </GoogleMap>
                 </LoadScript>
-            </div>
+            </section>
         </HomeEl>
     );
 }

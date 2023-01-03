@@ -1,7 +1,7 @@
 import styled, { css } from "styled-components";
 
 type DonationPointCardElProps = {
-    alterLayout?: boolean;
+    isSelected?: boolean;
 }
 
 export const DonationPointCardEl = styled.div<DonationPointCardElProps>`
@@ -11,6 +11,8 @@ export const DonationPointCardEl = styled.div<DonationPointCardElProps>`
     border-radius: 0.5rem;
     border: solid 1px var(--color-gray-200);
     gap: 0.5rem;
+    cursor: pointer;
+    transition: 0.5s;
     
     background-color: var(--color-gray-100);
     display: grid;
@@ -21,36 +23,26 @@ export const DonationPointCardEl = styled.div<DonationPointCardElProps>`
     "add add"
     "cep cep";
 
-    ${props => props.alterLayout && css`
-        max-width: 40rem;
+    ${props => props.isSelected && css`
         background-color: var(--color-white);
-        box-shadow: var(--color-gray-200) 1px 1px 8px 0px;
-        
-        position: relative;
-        top: calc(100% - 11.5rem);
-        left: 1rem;
-
-        grid-template-areas:
-        "nam ico"
-        "add add"
-        "cep cep";
+        box-shadow: -2px 3px 4px 0px var(--color-gray-200);
+        margin-left: 0.5rem;
+        border-right: 1rem;
+        border-right-color: var(--color-blue-200);
+        border-right-style: solid;
     `}
 
-    >strong {
-        font-weight: 500;
-        grid-area: nam;
+    &:hover {
+        box-shadow: -2px 3px 4px 0px var(--color-gray-200);
+        margin-left: 0.5rem;
     }
 
-    >svg {
-        grid-area: ico;
-        color: var(--color-red);
-        font-size: 1.5rem;
-        cursor: pointer;
-        transition-duration: 0.2s;
+    &:active {
+        box-shadow: none;
+    }
 
-        &:hover {
-            opacity: 0.8;
-        }
+    >strong {
+        grid-area: nam;
     }
 
     >p {
@@ -60,6 +52,10 @@ export const DonationPointCardEl = styled.div<DonationPointCardElProps>`
 
     >span {
         grid-area: cep;
+
+        >strong {
+            font-weight: 500;
+        }
     }
 
     & + & {

@@ -14,6 +14,7 @@ export type DonationPoint = {
     lng: number;
     lat: number;
     creationDate: string;
+    distance: number;
 }
 
 type listDonationPointResponse = {

@@ -3,38 +3,38 @@ import styled from "styled-components";
 export const HomeEl = styled.main`
     width: 100vw;
     height: 100vh;
-    padding: 5%;
-    row-gap: 1rem;
-    column-gap: 3rem;
 
     display: grid;
-    grid-template-columns: 0.3fr 1fr;
-    grid-template-rows: 2.5rem auto;
+    grid-template-columns: 30rem 1fr;
+    grid-template-rows: auto;
     grid-template-areas:
-    "subt map"
-    "list map";
+    "men map";
 
-    >h3 {
-        grid-area: subt;
-        margin-bottom: 0;
-    }
-    
-    >form {
-        grid-area: form;
-        min-width: 20rem;
-    }
+    >aside {
+        box-shadow: inset -1px -1px 11px var(--color-gray-200);
+        padding: 2rem 2rem 0 2rem;
+        overflow: hidden;
+        
+        grid-area: men;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
 
-    >div {
-        &:first-of-type {
-            width: calc(100% + 1.5rem);
-            grid-area: list;
+        >h3 {
+            grid-area: subt;
+            margin-bottom: 0;
+        }
+
+        >div {
+            width: calc(100% + 10rem);
             overflow-y: scroll;
-            padding-right: 0.5rem;
+            padding-right: 9rem;
+            overflow-x: hidden;
+            padding-bottom: 3rem;
         }
+    }
 
-        &:last-of-type {
-            grid-area: map;
-            border-radius: 0.5rem;
-        }
+    >section {
+        grid-area: map;
     }
 `;

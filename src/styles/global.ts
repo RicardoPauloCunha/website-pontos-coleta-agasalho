@@ -12,6 +12,8 @@ export default createGlobalStyle`
         --color-black: #000000;
         --color-red: #EF5350;
         
+        --color-blue-200: #5764F6;
+        
         --color-gray-100: #F2F2F2;
         --color-gray-200: #999999;
         --color-gray-300: #404040;
@@ -31,7 +33,7 @@ export default createGlobalStyle`
         outline: none;
         text-overflow: ellipsis;
         position: relative;
-        top: 1rem;
-        left: 1rem;
+        top: 2rem;
+        left: 2rem;
     }
 `;
