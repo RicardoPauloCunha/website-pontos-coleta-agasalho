@@ -10,11 +10,11 @@ export const DonationPointCardEl = styled.div<DonationPointCardElProps>`
     padding: 1rem;
     border-radius: 0.5rem;
     border: solid 1px var(--color-gray-200);
-    gap: 0.5rem;
-    cursor: pointer;
-    transition: 0.5s;
-    
     background-color: var(--color-gray-100);
+    transition: 0.5s;
+    cursor: pointer;
+    gap: 0.5rem;
+    
     display: grid;
     grid-template-columns: 1fr 1.5rem;
     grid-template-rows: repeat(3, auto);
@@ -54,11 +54,24 @@ export const DonationPointCardEl = styled.div<DonationPointCardElProps>`
         grid-area: cep;
 
         >strong {
-            font-weight: 500;
+            font-weight: 600;
         }
     }
 
     & + & {
         margin-top: 1rem;
+    }
+
+    @media(max-width: 768px) {
+        min-width: 30rem;
+
+        & + & {
+            margin-top: 0;
+            margin-left: 1rem;
+        }
+    }
+
+    @media(max-width: 512px) {
+        min-width: 80vw;
     }
 `;

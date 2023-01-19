@@ -36,4 +36,18 @@ export default createGlobalStyle`
         top: 2rem;
         left: 2rem;
     }
+
+    @media(max-width: 768px) {
+        .address-search-input {
+            width: calc(100% - 4rem);
+        }
+    }
+
+    @media(max-width: 768px) {
+        .address-search-input {
+            width: calc(100% - 2rem);
+            top: 1rem;
+            left: 1rem;
+        }
+    }
 `;

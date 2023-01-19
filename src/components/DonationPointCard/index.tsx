@@ -1,6 +1,6 @@
 import { DonationPoint } from "../../services/http/donationPoint";
 import { donationPointCardIdGenetor } from "../../util/generator";
-import { formatAddress, formatCep } from "../../util/stringFormat";
+import { formatAddress } from "../../util/stringFormat";
 import { DonationPointCardEl } from "./styles";
 
 type DonationPointCardProps = {
@@ -21,10 +21,10 @@ const DonationPointCard = ({ index, isSelected, cardData, toggleIsSelected }: Do
 
             <p>{formatAddress(cardData)}</p>
 
-            <span>Distância: <strong>{cardData.distance
-                ? `${cardData.distance.toFixed(2)} KM`
-                : "0 KM"
-            }</strong></span>
+            {cardData.distance
+                ? <span>Distância: <strong>{cardData.distance.toFixed(2)} KM</strong></span>
+                : <span></span>
+            }
         </DonationPointCardEl>
     )
 }

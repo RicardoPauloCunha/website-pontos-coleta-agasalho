@@ -9,6 +9,7 @@ import { PositionData, useDonationPoint } from '../../contexts/donationPoint';
 import { DonationPoint, listDonationPointHttp } from '../../services/http/donationPoint';
 import { haversineFormula } from "../../util/formula";
 import { donationPointCardIdGenetor } from "../../util/generator";
+import { formatState } from "../../util/stringFormat";
 import { HomeEl } from './styles';
 
 const Home = () => {
@@ -27,19 +28,37 @@ const Home = () => {
     const [donationPoints, setDonationPoints] = useState<DonationPoint[]>([]);
 
     useEffect(() => {
-        navigator.geolocation.getCurrentPosition(getCurrentPosition, defineDefaultPosition);
-
         getDonationPoints();
         // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
-        if (donationPoints && currentPosition.lat && currentPosition.lng) {
+        if (currentPosition.lat && currentPosition.lng) {
             handlerFocusPoint(currentPosition);
             defineDonationsPoints();
         }
         // eslint-disable-next-line
-    }, [donationPoints, currentPosition]);
+    }, [currentPosition]);
+
+    const getDonationPoints = () => {
+        setIsLoading(true);
+
+        listDonationPointHttp({
+            size: 100
+        }).then(response => {
+            if (response) {
+                response.content.forEach(x => {
+                    x.state = formatState(x.state);
+                });
+
+                setDonationPoints(response.content);
+                
+                navigator.geolocation.getCurrentPosition(getCurrentPosition, defineDefaultPosition);
+            }
+        }).catch(() => {
+            setWarning(["danger", "Não foi possível buscar os pontos de coleta."]);
+        }).finally(() => { setIsLoading(false); });
+    }
 
     const getCurrentPosition = (geolocationPosition: GeolocationPosition) => {
         let position: PositionData = {
@@ -48,19 +67,6 @@ const Home = () => {
         };
 
         defineCurrentPosition(position);
-    }
-
-    const getDonationPoints = () => {
-        setIsLoading(true);
-
-        listDonationPointHttp({
-            size: 100
-        }).then(response => {
-            if (response)
-                setDonationPoints(response.content);
-        }).catch(() => {
-            setWarning(["danger", "Não foi possível buscar os pontos de coleta."]);
-        }).finally(() => { setIsLoading(false); });
     }
 
     const defineDefaultPosition = () => {
@@ -129,11 +135,9 @@ const Home = () => {
         <HomeEl>
             <aside>
                 <h3>Pontos de coleta</h3>
-                <p>Encontre os pontos de coleta mais próximos de você pode realizar a doação de agasalhos.</p>
+                <p>Encontre os pontos de coleta mais próximos de você para realizar a doação de agasalhos.</p>
 
-                <div
-                    ref={divRef}
-                >
+                <div ref={divRef}>
                     {donationPoints.map((x, index) => (
                         <DonationPointCard
                             key={x.id}
