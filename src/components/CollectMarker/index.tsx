@@ -1,6 +1,6 @@
 import { Marker } from '@react-google-maps/api';
-import pointDefaultIcon from "../../assents/icons/point_default.svg";
-import pointSelectedIcon from "../../assents/icons/point_selected.svg";
+import pointDefaultIcon from "../../assets/icons/point_default.svg";
+import pointSelectedIcon from "../../assets/icons/point_selected.svg";
 import { PositionData } from '../../contexts/donationPoint';
 
 export type CustomMarkerProps = {
