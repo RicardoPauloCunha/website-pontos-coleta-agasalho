@@ -4,6 +4,7 @@ import AddressSearch from '../../components/AddressSearch';
 import CollectMarker from "../../components/CollectMarker";
 import DonationPointCard from '../../components/DonationPointCard';
 import Loading from '../../components/Loading';
+import UserMarker from "../../components/UserMarker";
 import Warning, { WarningTuple } from '../../components/Warning';
 import { PositionData, useDonationPoint } from '../../contexts/donationPoint';
 import { DonationPoint, listDonationPointHttp } from '../../services/http/donationPoint';
@@ -28,32 +29,38 @@ const Home = () => {
     const [donationPoints, setDonationPoints] = useState<DonationPoint[]>([]);
 
     useEffect(() => {
-        getDonationPoints();
+        setIsLoading(true);
+
+        navigator.geolocation.getCurrentPosition(getCurrentPosition, getDefaultPosition);
         // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
-        if (currentPosition.lat && currentPosition.lng) {
+        if (currentPosition.lat && currentPosition.lng && donationPoints.length !== 0) {
             handlerFocusPoint(currentPosition);
-            defineDonationsPoints();
+
+            let list = sortDonationsPoints(currentPosition, donationPoints);
+            setDonationPoints([...list]);
         }
         // eslint-disable-next-line
-    }, [currentPosition]);
+    }, [currentPosition.lat, currentPosition.lng]);
 
-    const getDonationPoints = () => {
+    const getDonationPoints = (position: PositionData) => {
         setIsLoading(true);
 
         listDonationPointHttp({
             size: 100
         }).then(response => {
             if (response) {
-                response.content.forEach(x => {
+                let list = response.content;
+
+                list.forEach(x => {
                     x.state = formatState(x.state);
                 });
 
+                list = sortDonationsPoints(position, list);
+
                 setDonationPoints(response.content);
-                
-                navigator.geolocation.getCurrentPosition(getCurrentPosition, defineDefaultPosition);
             }
         }).catch(() => {
             setWarning(["danger", "Não foi possível buscar os pontos de coleta."]);
@@ -67,30 +74,32 @@ const Home = () => {
         };
 
         defineCurrentPosition(position);
+        getDonationPoints(position);
     }
 
-    const defineDefaultPosition = () => {
+    const getDefaultPosition = () => {
         let initialPosition: PositionData = {
             lat: -23.550599,
             lng: -46.632938
         };
 
         defineCurrentPosition(initialPosition);
+        getDonationPoints(initialPosition);
     }
 
-    const defineDonationsPoints = () => {
-        donationPoints.forEach(x => {
+    const sortDonationsPoints = (position: PositionData, list: DonationPoint[]) => {
+        list.forEach(x => {
             let pointPosition = {
                 lat: x.lat,
                 lng: x.lng
             };
 
-            x.distance = haversineFormula(currentPosition, pointPosition);
+            x.distance = haversineFormula(position, pointPosition);
         });
 
-        donationPoints.sort((a, b) => a.distance - b.distance);
+        list.sort((a, b) => a.distance - b.distance);
 
-        setDonationPoints(donationPoints);
+        return list
     }
 
     const toggleSelectedPoint = (index: number, mapFocus: boolean) => {
@@ -177,7 +186,7 @@ const Home = () => {
                         />
 
                         {donationPoints.map((x, index) => (<CollectMarker
-                            key={index}
+                            key={x.id}
                             position={{
                                 lat: x.lat,
                                 lng: x.lng
@@ -185,6 +194,13 @@ const Home = () => {
                             selected={index === selectedPointIndex}
                             onClick={() => toggleSelectedPoint(index, false)}
                         />))}
+
+                        {(currentPosition.lat || currentPosition.lng) && <UserMarker
+                            position={{
+                                lat: currentPosition.lat,
+                                lng: currentPosition.lng
+                            }}
+                        />}
                     </GoogleMap>
                 </LoadScript>
             </section>

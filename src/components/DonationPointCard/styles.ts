@@ -5,15 +5,15 @@ type DonationPointCardElProps = {
 }
 
 export const DonationPointCardEl = styled.div<DonationPointCardElProps>`
+    gap: 0.5rem;
     width: 100%;
     height: auto;
+    cursor: pointer;
     padding: 1rem;
+    transition: 0.5s;
     border-radius: 0.5rem;
     border: solid 1px var(--color-gray-200);
     background-color: var(--color-gray-100);
-    transition: 0.5s;
-    cursor: pointer;
-    gap: 0.5rem;
     
     display: grid;
     grid-template-columns: 1fr 1.5rem;
@@ -24,17 +24,17 @@ export const DonationPointCardEl = styled.div<DonationPointCardElProps>`
     "cep cep";
 
     ${props => props.isSelected && css`
-        background-color: var(--color-white);
-        box-shadow: -2px 3px 4px 0px var(--color-gray-200);
         margin-left: 0.5rem;
         border-right: 1rem;
-        border-right-color: var(--color-blue-200);
+        background-color: var(--color-white);
         border-right-style: solid;
+        border-right-color: var(--color-blue-200);
+        box-shadow: -2px 3px 4px 0px var(--color-gray-200);
     `}
 
     &:hover {
-        box-shadow: -2px 3px 4px 0px var(--color-gray-200);
         margin-left: 0.5rem;
+        box-shadow: -2px 3px 4px 0px var(--color-gray-200);
     }
 
     &:active {
@@ -64,6 +64,7 @@ export const DonationPointCardEl = styled.div<DonationPointCardElProps>`
 
     @media(max-width: 768px) {
         min-width: 30rem;
+        height: fit-content;
 
         & + & {
             margin-top: 0;

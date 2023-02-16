@@ -19,35 +19,7 @@ export default createGlobalStyle`
         --color-gray-300: #404040;
     }
 
-    h1, h2, h3, h4, h5, h6, p, strong, span {
+    h1, h2, h3, h4, h5, h6, p, strong, span, label {
         color: var(--color-gray-300);
-    }
-
-    .address-search-input {
-        border: 1px solid var(--color-gray-200);
-        width: 30rem;
-        height: 3rem;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        font-size: 1rem;
-        outline: none;
-        text-overflow: ellipsis;
-        position: relative;
-        top: 2rem;
-        left: 2rem;
-    }
-
-    @media(max-width: 768px) {
-        .address-search-input {
-            width: calc(100% - 4rem);
-        }
-    }
-
-    @media(max-width: 768px) {
-        .address-search-input {
-            width: calc(100% - 2rem);
-            top: 1rem;
-            left: 1rem;
-        }
     }
 `;

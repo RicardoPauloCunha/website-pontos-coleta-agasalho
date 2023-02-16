@@ -11,21 +11,21 @@ export const HomeEl = styled.main`
     "men map";
 
     >aside {
-        grid-area: men;
-        box-shadow: inset -1px -1px 11px var(--color-gray-200);
-        padding: 2rem 2rem 0 2rem;
-        overflow: hidden;
         gap: 1rem;
+        overflow: hidden;
+        grid-area: men;
+        padding: 2rem 2rem 0 2rem;
+        box-shadow: inset -1px -1px 11px var(--color-gray-200);
         
         display: flex;
         flex-direction: column;
 
         >div {
             width: 100%;
-            padding-right: 1.5rem;
-            padding-bottom: 3rem;
             overflow-y: scroll;
             overflow-x: hidden;
+            padding-right: 1.5rem;
+            padding-bottom: 3rem;
 
             display: flex;
             flex-direction: column;
@@ -54,26 +54,31 @@ export const HomeEl = styled.main`
     }
 
     @media(max-width: 768px) {
-        grid-template-columns: auto;
-        grid-template-rows: 1fr 20rem;
-        grid-template-areas:
-        "map"
-        "men";
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column-reverse;
 
         >aside {
-            gap: 0;
+            padding: 2rem 1rem;
+            box-shadow: none;
 
             >p {
                 margin-bottom: 1rem;
             }
 
             >div {
-                padding-bottom: 1rem;
                 overflow-y: hidden;
                 overflow-x: scroll;
+                padding-bottom: 1rem;
 
                 flex-direction: row;
             }
+        }
+
+        >section {
+            height: 70vh;
+            min-height: 30rem;
         }
     }
 

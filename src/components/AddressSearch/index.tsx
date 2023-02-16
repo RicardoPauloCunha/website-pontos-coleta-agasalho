@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { StandaloneSearchBox } from "@react-google-maps/api";
 import { PositionData, useDonationPoint } from "../../contexts/donationPoint";
+import { AddressSearchEl } from './styles';
 
 type AddressSearchProps = {
     resetSelections: () => void;
@@ -30,15 +31,19 @@ const AddressSearch = ({ resetSelections }: AddressSearchProps) => {
     }
 
     return (
-        <StandaloneSearchBox
-            onLoad={onLoad}
-            onPlacesChanged={handlerSelect}
-        >
-            <input
-                className='address-search-input'
-                placeholder='Rua das flores Nº 32, 00000-000...'
-            />
-        </StandaloneSearchBox>
+        <AddressSearchEl>
+            <label>Pesquisar endereço</label>
+
+            <StandaloneSearchBox
+                onLoad={onLoad}
+                onPlacesChanged={handlerSelect}
+            >
+                <input
+                    className='address-search-input'
+                    placeholder='Clique aqui para digitar o endereço'
+                />
+            </StandaloneSearchBox>
+        </AddressSearchEl>
     );
 }
 

@@ -3,13 +3,13 @@ import pointDefaultIcon from "../../assets/icons/point_default.svg";
 import pointSelectedIcon from "../../assets/icons/point_selected.svg";
 import { PositionData } from '../../contexts/donationPoint';
 
-export type CustomMarkerProps = {
+export type CollectMarkerProps = {
     selected: boolean;
     position: PositionData;
     onClick: () => void;
 }
 
-const CollectMarker = ({ selected, position, onClick }: CustomMarkerProps) => {
+const CollectMarker = ({ selected, position, onClick }: CollectMarkerProps) => {
     return (
         <Marker key="collect"
             icon={selected
