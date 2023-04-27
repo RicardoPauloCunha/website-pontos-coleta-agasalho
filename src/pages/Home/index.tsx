@@ -31,7 +31,9 @@ const Home = () => {
     useEffect(() => {
         setIsLoading(true);
 
-        navigator.geolocation.getCurrentPosition(getCurrentPosition, getDefaultPosition);
+        getDefaultPosition();
+
+        navigator.geolocation.getCurrentPosition(getCurrentPosition);
         // eslint-disable-next-line
     }, []);
 
@@ -67,16 +69,6 @@ const Home = () => {
         }).finally(() => { setIsLoading(false); });
     }
 
-    const getCurrentPosition = (geolocationPosition: GeolocationPosition) => {
-        let position: PositionData = {
-            lat: geolocationPosition.coords.latitude,
-            lng: geolocationPosition.coords.longitude
-        };
-
-        defineCurrentPosition(position);
-        getDonationPoints(position);
-    }
-
     const getDefaultPosition = () => {
         let initialPosition: PositionData = {
             lat: -23.550599,
@@ -85,6 +77,15 @@ const Home = () => {
 
         defineCurrentPosition(initialPosition);
         getDonationPoints(initialPosition);
+    }
+
+    const getCurrentPosition = (geolocationPosition: GeolocationPosition) => {
+        let position: PositionData = {
+            lat: geolocationPosition.coords.latitude,
+            lng: geolocationPosition.coords.longitude
+        };
+
+        defineCurrentPosition(position);
     }
 
     const sortDonationsPoints = (position: PositionData, list: DonationPoint[]) => {
