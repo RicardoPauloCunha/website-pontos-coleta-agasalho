@@ -33,7 +33,9 @@ const Home = () => {
 
         getDefaultPosition();
 
-        navigator.geolocation.getCurrentPosition(getCurrentPosition);
+        setTimeout(() => {
+            navigator.geolocation.getCurrentPosition(getCurrentPosition); 
+        }, 300);
         // eslint-disable-next-line
     }, []);
 
