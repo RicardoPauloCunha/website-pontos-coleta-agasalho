@@ -17,14 +17,12 @@ const DonationPointCard = ({ index, isSelected, cardData, toggleIsSelected }: Do
             isSelected={isSelected}
             onClick={() => toggleIsSelected(index, true)}
         >
-            <strong>{cardData.name}</strong>
+            {cardData.distance !== undefined
+                ? <strong>Distância - {cardData.distance.toFixed(2)} KM</strong>
+                : <strong>Distância - Calculando...</strong>
+            }
 
             <p>{formatAddress(cardData)}</p>
-
-            {cardData.distance
-                ? <span>Distância: <strong>{cardData.distance.toFixed(2)} KM</strong></span>
-                : <span></span>
-            }
         </DonationPointCardEl>
     )
 }

@@ -1,46 +1,63 @@
-# Getting Started with Create React App
+# Website Pontos Coleta Agasalho
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Página web que exibe os pontos de coleta de agasalhos para doação em um mapa interativo. Esses pontos de coleta são listados através do consumo da API disponível no sistema [Donations Points Scraping](https://github.com/PedroHPAlmeida/fatec-tg-scraping-donations-points), que recupera essas informações através do processo de **Web Scraping** em outros sites de campanha de agasalhos.
 
-## Available Scripts
+O objetivo desta aplicação é facilitar o acesso dos usuários as informações disponibilizadas pela API através da sua exibição em uma interface de usuário simples e permitir uma melhor navegação ao colocar a marcação desses pontos em um mapa interativo.
 
-In the project directory, you can run:
+## Tecnologias utilizadas
 
-### `yarn start`
+* React, TypeScript, HTML e CSS para desenvolvimento da aplicação;
+* API do Google Maps para geração do mapa e implementação do campo de busca com auto complemento;
+* Biblioteca Axios para integração com os serviços da API;
+* Biblioteca Reactstrap e styled-components para estilização dos componentes e páginas da aplicação;
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Pré-requisitos para executar o projeto
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+* Node v19.3.0
+* Yarn v1.22.19
+* React v18.0.0
 
-### `yarn test`
+## Como executar o projeto
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Clone o repositório:
 
-### `yarn build`
+```
+git clone https://github.com/RicardoPauloCunha/website-pontos-coleta-agasalho.git
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+2. Abra o arquivo ```.env.development``` para adicionar as configurações do ambiente de desenvolvimento e o arquivo ```.env.production``` para o ambiente de produção:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+<div align="center">
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![env development files](src/assets/imgs/env-development.png)
 
-### `yarn eject`
+</div>
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+3. Altere o valor de **URL_API** para o link da API que será utilizada como fonte dos dados;
+4. Altere também o valor de **GOOGLE_MAPS_API_KEY** para a sua chave de API do Google Maps (é precisa ativar a API "Maps JavaScript API" e "Places API" para poder utilizar os serviços com essa chave):
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+<div align="center">
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+![google maps api key files](src/assets/imgs/google-maps-api-key.png)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+</div>
 
-## Learn More
+5. Execute o comando no terminal para instalar os pacotes:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+yarn install
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+6. Em seguida, o comando para executar a aplicação:
+
+```bash
+yarn start
+```
+
+7. Por fim, abra [http://localhost:3000](http://localhost:3000) para visualizá-lo no navegador.
+
+<div align="center">
+
+![main page files](src/assets/imgs/main-page.png)
+
+</div>
